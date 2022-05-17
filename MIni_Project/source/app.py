@@ -1,15 +1,13 @@
 #@Author: Asha Nair
-#Date: 25 April 2022-01 June 2022
 
 #import required libraries
+
 from shop_name import logo
-import pprint as pp
-import json
+import csv
 import utils
-# import tabulate
 from utils import Utility
 
-print(logo+'\n')
+print(logo+'\n')                            # Print the Organisation Logo
 print('**Welcome to Aroma Mocha! Enjoy your day!!**\n')
 print("--------------------------------------------\n")
 print("                 MAIN MENU             ")
@@ -22,10 +20,10 @@ print("-------------------------------------------\n")
 class Products(Utility):
     def __init__(self):
         super().__init__()
-        #load the products.txt file
-        with open(r'F:\Generation UK\Generation_UK_Codefiles\MIni_Project\source\products.txt','r') as txt_file:
-                    self.products_list=txt_file.read().splitlines()
-                    
+    
+        #Read products from products.csv to products list which is a list of dictionaries
+        self.products_list=self.csv_reader('products.csv')     
+        
         self.product_menu={
                     0: 'Return to main menu',               #Create the product_menu for the user to choose from
                     1: 'View Products',
@@ -41,10 +39,8 @@ class Courier(Utility):
         def __init__(self):
             super().__init__()
             
-            #Read the courier.txt file
-            with open(r'F:\Generation UK\Generation_UK_Codefiles\MIni_Project\source\courier.txt','r') as txt_file:
-                            self.courier_list=txt_file.read().splitlines()
-                            
+            #Read the courier.csv file to the couriers list which is a list of dictionaries
+            self.couriers_list=self.csv_reader('couriers.csv')                   
             self.couriers_menu={
                     0: 'Return to main menu',
                     1: 'View Courier',
@@ -58,10 +54,8 @@ class Orders(Products,Courier):
         def __init__(self):
             super().__init__()
             
-            # Read the orders.json file
-            with open(r'F:\Generation UK\Generation_UK_Codefiles\MIni_Project\source\orders.json') as json_file:
-                            self.orders_list=json.load(json_file)
-             
+            #Read the orders.csv file to the orders list which is a list of dictionaries
+            self.orders_list=self.csv_reader('orders.csv')  
             
             self.orders_menu={
                         0:'Return to main menu',
@@ -103,33 +97,37 @@ def main():
             case 2:
                 show_courier_options(cr_obj)
             case 3:
-                show_order_options(ord_obj,cr_obj)
+                show_order_options(ord_obj,cr_obj,prd_obj)
 
 def show_product_options(prd_obj): 
         print('\n------------------PRODUCT MENU----------------')                           #Create product menu 
-        pp.pprint(prd_obj.product_menu)
-        product_option=int(input('Please select one of the following product options:'))  
+        prd_obj.print_dict(prd_obj.product_menu)
+        product_option=int(input("Please select one of the product menu's options:"))  
         prd_obj=Product_Management(product_option,prd_obj)
         show_product_options(prd_obj)
         
 def show_courier_options(cr_obj):                                                        #Create Courier Menu
         print('\n------------------COURIER MENU----------------')
-        pp.pprint(cr_obj.couriers_menu)
-        courier_option=int(input('Please select one of the following courier options:'))  
+        cr_obj.print_dict(cr_obj.couriers_menu)
+        # pp.pprint(cr_obj.couriers_menu)
+        courier_option=int(input("Please select one of the courier menu's options:"))  
         cr_obj=Courier_Management(courier_option,cr_obj)
         show_courier_options(cr_obj)
 
-def show_order_options(ord_obj,cr_obj):                                                    #Create Orders Menu
+def show_order_options(ord_obj,cr_obj,prd_obj):                                                    #Create Orders Menu
         print('\n------------------ORDERS MENU----------------')
         ord_obj.print_dict(ord_obj.orders_menu)
-        #pp.pprint(ord_obj.orders_menu)
-        order_option=int(input('Please select one of the following order_menu options:'))  
-        ord_obj=Orders_Management(order_option,ord_obj,cr_obj)
+        order_option=int(input("Please select one of the order_menu options:"))  
+        ord_obj=Orders_Management(order_option,ord_obj,cr_obj,prd_obj)
         user_menu_choice=input('Would you like to go back to the Orders menu? Y/N: ')
         if user_menu_choice=='Y':
-            show_order_options(ord_obj,cr_obj)
+            show_order_options(ord_obj,cr_obj,prd_obj)
         else:
-            ord_obj.write_json(ord_obj.orders_list,'Orders')
+            keys = ord_obj.orders_list[0].keys()
+            with open(r'F:\Generation-Mini Project\Aroma-Mocha\MIni_Project\source\orders.csv', 'w', newline='') as orders_file:
+                dict_writer = csv.DictWriter(orders_file, keys)
+                dict_writer.writeheader()
+                dict_writer.writerows(ord_obj.orders_list)
             main()
             
 #Create a function to carry out operations in the Products list when the user chooses a suitable option from Products menu
@@ -137,31 +135,51 @@ def show_order_options(ord_obj,cr_obj):                                         
 def Product_Management(product_option,prd_obj):
     match product_option:
                     case 0:
-                        with open(r'F:\Generation UK\Generation_UK_Codefiles\MIni_Project\source\products.txt','w') as txt_file:
-                            for element in prd_obj.products_list:
-                                txt_file.write(element + '\n')
+                        keys = prd_obj.products_list[0].keys()
+                        with open(r'F:\Generation-Mini Project\Aroma-Mocha\MIni_Project\source\products.csv', 'w', newline='') as output_file:
+                            dict_writer = csv.DictWriter(output_file, keys)
+                            dict_writer.writeheader()
+                            dict_writer.writerows(prd_obj.products_list)
+                        #prd_obj.csv_writer(products.csv,products_list)
                         main()
                     case 1: 
-                        prd_obj.view_list_indices(prd_obj.products_list)
+                        prd_obj.tabulate_results(prd_obj.products_list)
+                        #prd_obj.view_list_indices(prd_obj.products_list)
                         return prd_obj
                     case 2:
+                        products_dict={}
                         prd_name=input('Please enter product name:')
-                        prd_obj.products_list= prd_obj.add(prd_name,prd_obj.products_list)
-                        prd_obj.view_list_indices(prd_obj.products_list)
+                        prd_price=input('Please enter product price:')
+                        max_id=max(prd_obj.products_list,key=lambda x:x['ID'])['ID']       #Find the maximum ID available 
+                        products_dict['ID']=str(int(max_id)+1)
+                        products_dict['Name']=prd_name
+                        products_dict['Price']=prd_price
+                        prd_obj.products_list= prd_obj.add(products_dict,prd_obj.products_list)
+                        print('\n Order created Successfully !!\n','______________________________')
+                        prd_obj.tabulate_results(prd_obj.products_list)
                         
                         return prd_obj
                     case 3:
-                       prd_obj.view_list_indices(prd_obj.products_list)
-                       existing_pdt_index=int(input('Enter index of the product to be updated:'))   
+                       prd_obj.tabulate_results(prd_obj.products_list)
+                       existing_pdt_index=input('Enter id of the product to be updated:')   
                        new_product=input('Enter the new product name: ') 
-                       prd_obj.products_list=prd_obj.update(existing_pdt_index,new_product,prd_obj.products_list)
-                       prd_obj.view_list_indices(prd_obj.products_list)
+                       new_price=input('Enter the new product price: ')
+                       print(prd_obj.products_list)
+                    #    print(prd_obj.find(prd_obj.products_list,'ID','2'))
+                       if new_product!='':
+                            prd_obj.products_list[prd_obj.products_list.index(next(iter(item for item in prd_obj.products_list if item['ID']==existing_pdt_index),None))]['Name']=new_product
+                       if new_price!='':
+                            prd_obj.products_list[prd_obj.products_list.index(next(iter(item for item in prd_obj.products_list if item['ID']==existing_pdt_index),None))]['Price']=new_price
+   
+                       print('\nProducts updated Successfully!!\n')
+                       prd_obj.tabulate_results(prd_obj.products_list)
                        return prd_obj
                     case 4:
-                        prd_obj.view_list_indices(prd_obj.products_list)
-                        delete_index=int(input('Enter the index of the product you want to delete:'))
-                        prd_obj.products_list=prd_obj.delete(delete_index,prd_obj.products_list)
-                        prd_obj.view_list_indices(prd_obj.products_list)
+                        prd_obj.tabulate_results(prd_obj.products_list)
+                        delete_index=input('Enter the ID of the product you want to delete:')
+                        prd_obj.products_list=prd_obj.delete(int(prd_obj.products_list.index(next(iter(item for item in prd_obj.products_list if item['ID']==delete_index),None))),prd_obj.products_list)
+                        print('\nProduct deleted Successfully!!\n')
+                        prd_obj.tabulate_results(prd_obj.products_list)
                         return prd_obj
                     case _:
                         print('Invalid selection')
@@ -171,42 +189,61 @@ def Product_Management(product_option,prd_obj):
 def Courier_Management(courier_option,cr_obj):
     match courier_option:
                     case 0:
-                        with open(r'F:\Generation UK\Generation_UK_Codefiles\MIni_Project\source\courier.txt','w') as txt_file:
-                            for element in cr_obj.courier_list:
-                                
-                                txt_file.write(element + '\n')
+                        keys = cr_obj.couriers_list[0].keys()
+                        with open(r'F:\Generation-Mini Project\Aroma-Mocha\MIni_Project\source\couriers.csv', 'w', newline='') as courier_file:
+                            dict_writer = csv.DictWriter(courier_file, keys)
+                            dict_writer.writeheader()
+                            dict_writer.writerows(cr_obj.couriers_list)
+    
                         main()
                     case 1: 
-                        cr_obj.view_list_indices(cr_obj.courier_list)
+                        cr_obj.tabulate_results(cr_obj.couriers_list)
                         return cr_obj
                     case 2:
-                        cr_name=input('Please enter courier name:')
-                        cr_obj.courier_list=cr_obj.add(cr_name,cr_obj.courier_list)
-                        cr_obj.view_list_indices(cr_obj.courier_list)
-                        
+                        couriers_dict={}
+                        cr_name=input("Please enter courier handler's name:")
+                        cr_phone= input('Please enter the phone number of the courier handler:')
+                        max_id=max(cr_obj.couriers_list,key=lambda x:x['ID'])['ID']       #Find the maximum ID available 
+                        couriers_dict['ID']=str(int(max_id)+1)
+                        couriers_dict['Name']=cr_name
+                        couriers_dict['Phone']=cr_phone
+                        cr_obj.couriers_list=cr_obj.add(couriers_dict,cr_obj.couriers_list)
+                        cr_obj.tabulate_results(cr_obj.couriers_list)   
                         return cr_obj
                     case 3:
-                       cr_obj.view_list_indices(cr_obj.courier_list)
-                       existing_cr_index=int(input('Enter index of the courier to be updated:'))   
-                       new_courier=input('Enter the new courier name: ') 
-                       cr_obj.courier_list=cr_obj.update(existing_cr_index,new_courier,cr_obj.courier_list)
-                       cr_obj.view_list_indices(cr_obj.courier_list)
+                       cr_obj.tabulate_results(cr_obj.couriers_list)
+                       existing_cr_index=input('Enter index of the courier to be updated:')   
+                       new_courier=input('Enter the new courier name: ')
+                       phone_update=input('Enter the new phone number:') 
+                       print(cr_obj.couriers_list)
+                       if new_courier!='':
+                            cr_obj.couriers_list[cr_obj.couriers_list.index(next(iter(item for item in cr_obj.couriers_list if item['ID']==existing_cr_index),None))]['Name']=new_courier
+                       if phone_update!='':
+                            cr_obj.couriers_list[cr_obj.couriers_list.index(next(iter(item for item in cr_obj.couriers_list if item['ID']==existing_cr_index),None))]['Phone']=phone_update
+                       print('\nCouriers updated Successfully!!\n')
+                       
+                       cr_obj.tabulate_results(cr_obj.couriers_list)
                        return cr_obj
                     case 4:
-                        cr_obj.view_list_indices(cr_obj.courier_list)
-                        delete_index=int(input('Enter the index of the courier you want to delete:'))
-                        cr_obj.courier_list=cr_obj.delete(delete_index,cr_obj.courier_list)
-                        cr_obj.view_list_indices(cr_obj.courier_list)
+                        cr_obj.tabulate_results(cr_obj.couriers_list)
+                        delete_id=input('Enter the ID of the courier you want to delete:')
+                        cr_obj.couriers_list=cr_obj.delete(int(cr_obj.couriers_list.index(next(iter(item for item in cr_obj.couriers_list if item['ID']==delete_id),None))),cr_obj.couriers_list)
+                        print('\nCourier Deleted Successfully!!\n')
+                        cr_obj.tabulate_results(cr_obj.couriers_list)
                         return cr_obj
                     case _:
                         print('Invalid selection')
 
 #Create a function to carry out operations in the Orders list when the user chooses a suitable option from Orders menu
 
-def Orders_Management(orders_option,ord_obj,cr_obj):
+def Orders_Management(orders_option,ord_obj,cr_obj,prd_obj):
     match orders_option:
                     case 0:
-                        ord_obj.write_json(ord_obj.orders_list,'Orders')
+                        keys = ord_obj.orders_list[0].keys()
+                        with open(r'F:\Generation-Mini Project\Aroma-Mocha\MIni_Project\source\orders.csv', 'w', newline='') as orders_file:
+                            dict_writer = csv.DictWriter(orders_file, keys)
+                            dict_writer.writeheader()
+                            dict_writer.writerows(ord_obj.orders_list)
                         main()
                     case 1: 
                         ord_obj.tabulate_results(ord_obj.orders_list)
@@ -215,16 +252,19 @@ def Orders_Management(orders_option,ord_obj,cr_obj):
                         cust_name=input('Customer Name:')
                         cust_address=input('Customer Address: ')
                         cust_phone_number=input('Customer Phone Number: ')
-                        cr_obj.view_list_indices(cr_obj.courier_list)
-                        select_courier=int(input("Select a courier using it's index: "))
+                        prd_obj.tabulate_results(prd_obj.products_list)
+                        prd_ids=input('Enter the product ids separated by commas:').split(',')
+                        cr_obj.tabulate_results(cr_obj.couriers_list)
+                        select_courier=input("Select a courier using it's id: ")
                         order={}
+                        
                         max_id=max(ord_obj.orders_list,key=lambda x:x['Id'])['Id']       #Find the maximum ID available in orders.json file
-                       
                         order['Id']=int(max_id)+1                                 #Assign the next order the next ID.
                         order['Name']=cust_name
                         order['Address']=cust_address
                         order['Phone']=cust_phone_number
-                        order['Courier']=cr_obj.courier_list[select_courier]
+                        order['Product']=prd_ids
+                        order['Courier']=cr_obj.couriers_list[cr_obj.couriers_list.index(next(iter(item for item in cr_obj.couriers_list if item['ID']==select_courier),None))]['Name']
                         order['Status']='PREPARING'
                         ord_obj.orders_list=ord_obj.add(order,ord_obj.orders_list)
                         print('\n Order created Successfully !!\n','______________________________')
@@ -232,41 +272,44 @@ def Orders_Management(orders_option,ord_obj,cr_obj):
                         return ord_obj
                     case 3:
                         ord_obj.tabulate_results(ord_obj.orders_list)
-                        order_index=input('Please enter the Order ID to be updated: ')
+                        order_id=input('Please enter the Order ID to be updated: ')
                         print('\n---------------ORDER STATUS OPTIONS-----------------')
                         ord_obj.view_list_indices(ord_obj.order_status)
                         update_status=input('Please enter the index of the order status: ')
                         
                         ord_obj.orders_list[ord_obj.orders_list.index(next(iter(item for item in ord_obj.orders_list if item['Id']\
-                                            ==int(order_index)),None))]['Status']=ord_obj.order_status[int(update_status)]
+                                            ==order_id),None))]['Status']=ord_obj.order_status[int(update_status)]
                         print('Order status updated Successfully!!\n')
                         return ord_obj
                     case 4: 
                         ord_obj.tabulate_results(ord_obj.orders_list)
                         
-                        order_index=input('Please enter the Order ID to be updated: ')
+                        order_id=input('Please enter the Order ID to be updated: ')
                         name_update=input('Enter the new name: ')
                         address_update=input('Enter the new address: ')
                         phone_update=input('Enter the new phone number: ')
-                        cr_obj.view_list_indices(cr_obj.courier_list)
+                        prd_update=input('Enter the new products:').split(',')
+
+                        cr_obj.tabulate_results(cr_obj.couriers_list)
                         courier_update=input('Enter the index of the new courier: ')
                         
                         if name_update!='':
-                            ord_obj.orders_list[ord_obj.orders_list.index(next(iter(item for item in ord_obj.orders_list if item['Id']==int(order_index)),None))]['Name']=name_update
+                            ord_obj.orders_list[ord_obj.orders_list.index(next(iter(item for item in ord_obj.orders_list if item['Id']==order_id),None))]['Name']=name_update
                         if address_update!='':
-                            ord_obj.orders_list[ord_obj.orders_list.index(next(iter(item for item in ord_obj.orders_list if item['Id']==int(order_index)),None))]['Address']=address_update
+                            ord_obj.orders_list[ord_obj.orders_list.index(next(iter(item for item in ord_obj.orders_list if item['Id']==order_id),None))]['Address']=address_update
                         if phone_update!='':
-                            ord_obj.orders_list[ord_obj.orders_list.index(next(iter(item for item in ord_obj.orders_list if item['Id']==int(order_index)),None))]['Phone']=phone_update
+                            ord_obj.orders_list[ord_obj.orders_list.index(next(iter(item for item in ord_obj.orders_list if item['Id']==order_id),None))]['Phone']=phone_update
+                        if len(prd_update)!=0 and prd_update[0]!='' :
+                                ord_obj.orders_list[ord_obj.orders_list.index(next(iter(item for item in ord_obj.orders_list if item['Id']==order_id),None))]['Product']=prd_update
                         if courier_update!='':
-                            ord_obj.orders_list[ord_obj.orders_list.index(next(iter(item for item in ord_obj.orders_list if item['Id']==int(order_index)),None))]['Courier']=cr_obj.courier_list[int(courier_update)]
+                            ord_obj.orders_list[ord_obj.orders_list.index(next(iter(item for item in ord_obj.orders_list if item['Id']==order_id),None))]['Courier']=cr_obj.couriers_list[int(cr_obj.couriers_list.index(next(iter(item for item in cr_obj.couriers_list if item['ID']==courier_update),None)))]['Name']
                         print('\nOrder updated Successfully!!\n') 
                         return ord_obj
                     case 5:
-                        # rows=[x.values() for x in ord_obj.orders_list]
-                        # header=ord_obj.orders_list[0].keys()
+                       
                         ord_obj.tabulate_results(ord_obj.orders_list)     
-                        order__del_index=input('Please enter the Order ID to be deleted: ')
-                        ord_obj.orders_list=ord_obj.delete(int(ord_obj.orders_list.index(next(iter(item for item in ord_obj.orders_list if item['Id']==int(order__del_index)),None))),ord_obj.orders_list)
+                        order__del_id=input('Please enter the Order ID to be deleted: ')
+                        ord_obj.orders_list=ord_obj.delete(int(ord_obj.orders_list.index(next(iter(item for item in ord_obj.orders_list if item['Id']==order__del_id),None))),ord_obj.orders_list)
                         print('\nOrder deleted Successfully!!\n')
                         return ord_obj
                     case _:
