@@ -9,6 +9,7 @@
 
 
 # Aroma-Mocha
+
 - Problem Statement:  
 
 Aroma Mocha is a coffee shop established in 2021. Due to it's excellent customer service, unique and delicious product ranges, the shop has started recieving larger number of orders from customers. The shop does online deliveries through it's tie ups with large food order and delivery platforms. Aroma Mocha, being a start-up decided to approach a Software Developer to build an application for them that can help them track their inventory and orders. 
@@ -27,5 +28,7 @@ The application has been developed using Python Programming Language.
 
 - Python Version- 3.10.4
 - utils.py - All helper classes and methods are written in this file.  
-- app.py- The main file that has  the application code.   
+- app.py- The main file that has  the application code.
+- app_test.py - The testing file used to test the functions in the application.   
 - shop_name.py - Contains the logo of Aroma Mocha  
+
