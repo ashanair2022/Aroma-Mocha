@@ -24,7 +24,7 @@ Aroma Mocha is a coffee shop established in 2021. Due to it's excellent customer
 
 - Ability to export data to a csv file. 
 
-The application has been developed using Python Programming Language. 
+The application has been developed using Python Programming Language and MySQL Database at the backend. 
 
 - Python Version- 3.10.4
    - Please set up a virtual environment using virtualenv, instructions here https://towardsdatascience.com/create-virtual-environment-using-virtualenv-and-add-it-to-jupyter-notebook-6e1bf4e03415
