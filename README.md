@@ -27,8 +27,16 @@ Aroma Mocha is a coffee shop established in 2021. Due to it's excellent customer
 The application has been developed using Python Programming Language. 
 
 - Python Version- 3.10.4
-- utils.py - All helper classes and methods are written in this file.  
-- app.py- The main file that has  the application code.
-- app_test.py - The testing file used to test the functions in the application.   
-- shop_name.py - Contains the logo of Aroma Mocha  
+   - Please set up a virtual environment using virtualenv, instructions here https://towardsdatascience.com/create-virtual-environment-using-virtualenv-and-add-it-to-jupyter-notebook-6e1bf4e03415
+   - Please specify the Python version, instructions here : https://stackoverflow.com/questions/1534210/use-different-python-version-with-virtualenv
+- Code_Files/requirements.txt to be run meet system requirements
+- Code_Files/utils.py - All helper classes and methods are written in this file.  
+- Code_Files/app.py- The main file that has  the application code.
+- Code_Files/app_test.py - The testing file used to test the functions in the application.   
+- Code_Files/shop_name.py - Contains the logo of Aroma Mocha  
+- Code_Files/docker-compose+Code_Files/.env to get docker up and running to connect to Mysql
+- MySQL scripts to create Database,tables and add data to them
+- All csv files as samples of the data in the database- Aroma-Mocha
+
+Please find Aroma-Mocha Dashboard here: https://datastudio.google.com/reporting/4c6e8c67-4f54-45f3-996a-4b2202b42771
 
