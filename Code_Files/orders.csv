@@ -1,0 +1,10 @@
+ID,Order_Name,Customer_Name,Customer_Address,Customer_Phone,Courier_Name,Order_Status,Product_Name
+1,JD124,Jack Dorsey,5 Lilham London,6799600,Uber,OUT FOR DELIVERY,Aroma Italica
+5,KN832,Kenny,88 Middle Town NW13BG,796857645,Deliveroo,PREPARING,Aroma Italica
+6,KN832,Kenny,88 Middle Town NW13BG,796857645,Deliveroo,PREPARING,Aroma Americano
+7,KN832,Kenny,88 Middle Town NW13BG,796857645,Deliveroo,OUT FOR DELIVERY,Aroma Americano
+8,NJ324,Nick J,78 Middlesex Town,0745982630,Zomato Delivery,OUT FOR DELIVERY,Vanilla Mochito
+10,KM982,Keith Marcus,54 Selson Road ,0654321098,Uber,OUT FOR DELIVERY,Vanilla Mochito
+11,KM982,Keith Marcus,54 Selson Road ,0654321098,Uber,OUT FOR DELIVERY,Aroma Vanilla
+12,NK876,Nikisha K,87 KK Road,0986875453,Uber,PREPARING,Aroma Italica
+14,JK235,John K,3 Kennedy Road,0973448244,Zomato Delivery,DELIVERED,Coffee Latte
