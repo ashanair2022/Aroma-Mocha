@@ -36,7 +36,8 @@ The application has been developed using Python Programming Language and MySQL D
 - Code_Files/shop_name.py - Contains the logo of Aroma Mocha  
 - Code_Files/docker-compose+Code_Files/.env to get docker up and running to connect to Mysql
 - MySQL scripts to create Database,tables and add data to them
-- All csv files as samples of the data in the database- Aroma-Mocha
+- All csv files as samples of the data in the database in Code_Files
+- Please specify the path where the csv should be saved in the export_csv() method of Utility class in utils file. 
 
 Please find Aroma-Mocha Dashboard here: https://datastudio.google.com/reporting/4c6e8c67-4f54-45f3-996a-4b2202b42771
 
