@@ -18,7 +18,7 @@ Aroma Mocha is a coffee shop established in 2021. Due to it's excellent customer
 - Track Product Inventory
    - Ability to view existing product inventory, create new products, update and delete products from the inventory as necessary   
 - Track Couriers
-  - Ability to view existing courrier providers, their phone numbers, create, update and delete couriers from the data
+  - Ability to view existing courier providers, their phone numbers, create, update and delete couriers from the data
 - Track Orders
   - Ability to view existing orders, create new orders that includes adding customer information, order information and status, update, delete orders. 
 
